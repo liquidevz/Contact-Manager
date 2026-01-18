@@ -260,9 +260,9 @@ router.get('/:id', authenticate, async (req, res) => {
             _id: req.params.id,
             owner: req.userId
         })
+            .select('-defaultLists -location')
             .populate('linkedUser', 'fullName email profilePicture')
             .populate('lists', 'name listType')
-            .populate('defaultLists.tasks defaultLists.meetings defaultLists.transactions')
             .populate('referrals.referredTo', 'fullName email')
             .populate('referrals.referredBy', 'fullName email');
 
@@ -440,6 +440,7 @@ router.post('/:id/referrals', authenticate, async (req, res) => {
  */
 router.get('/:id/lists', authenticate, async (req, res) => {
     try {
+        const { type } = req.query;
         const contact = await Contact.findOne({
             _id: req.params.id,
             owner: req.userId
@@ -449,12 +450,17 @@ router.get('/:id/lists', authenticate, async (req, res) => {
             return res.status(404).json({ error: 'Contact not found' });
         }
 
-        res.json({
-            defaultLists: {
-                tasks: contact.defaultLists.tasks,
-                meetings: contact.defaultLists.meetings,
-                transactions: contact.defaultLists.transactions
+        if (type) {
+            if (!['tasks', 'meetings', 'transactions'].includes(type)) {
+                return res.status(400).json({ error: 'Invalid list type' });
             }
+            return res.json({ list: contact.defaultLists[type] });
+        }
+
+        res.json({
+            tasks: contact.defaultLists.tasks,
+            meetings: contact.defaultLists.meetings,
+            transactions: contact.defaultLists.transactions
         });
     } catch (err) {
         console.error('Get default lists error:', err);
