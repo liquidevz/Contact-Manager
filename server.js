@@ -25,7 +25,10 @@ app.use(express.urlencoded({ extended: true }));
 // Swagger UI
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
     customCss: '.swagger-ui .topbar { display: none }',
-    customSiteTitle: 'Contact Manager API Documentation'
+    customSiteTitle: 'Contact Manager API Documentation',
+    swaggerOptions: {
+        persistAuthorization: true,
+    }
 }));
 
 /**
