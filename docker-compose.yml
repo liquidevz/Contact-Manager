@@ -1,0 +1,15 @@
+services:
+  app:
+    build: .
+    container_name: contact-manager-app
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "${PORT}:${PORT}"
+    networks:
+      - contact-manager-network
+
+networks:
+  contact-manager-network:
+    driver: bridge
