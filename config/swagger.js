@@ -18,12 +18,18 @@ const options = {
         },
         servers: [
             {
-                url: `http://localhost:${process.env.PORT || 3000}${apiBasePath}/${apiVersion}`,
-                description: `Development server (${apiVersion})`
+                url: process.env.NODE_ENV === 'production' 
+                    ? `https://contacts.liquidata.dev${apiBasePath}/${apiVersion}`
+                    : `http://localhost:${process.env.PORT || 5000}${apiBasePath}/${apiVersion}`,
+                description: process.env.NODE_ENV === 'production' 
+                    ? `Production server (${apiVersion})`
+                    : `Development server (${apiVersion})`
             },
             {
-                url: `http://localhost:${process.env.PORT || 3000}`,
-                description: 'Base server URL'
+                url: process.env.NODE_ENV === 'production'
+                    ? 'https://contacts.liquidata.dev'
+                    : `http://localhost:${process.env.PORT || 5000}`,
+                description: process.env.NODE_ENV === 'production' ? 'Production base URL' : 'Development base URL'
             }
         ],
         components: {
