@@ -210,9 +210,9 @@ router.get('/', authenticate, async (req, res) => {
         }
 
         const contacts = await Contact.find(query)
+            .select('-defaultLists -location')
             .populate('linkedUser', 'fullName email profilePicture')
             .populate('lists', 'name listType')
-            .populate('defaultLists.tasks defaultLists.meetings defaultLists.transactions')
             .skip(skip)
             .limit(limit)
             .sort({ priority: -1, createdAt: -1 });
