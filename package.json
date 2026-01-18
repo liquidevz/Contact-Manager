@@ -1,0 +1,51 @@
+{
+  "name": "contact-manager",
+  "version": "1.0.0",
+  "description": "Contact Manager with dynamic user types, share code system, and list management",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "server": "node server.js",
+    "server:dev": "nodemon server.js",
+    "test": "jest",
+    "demo": "node examples/completeExample.js",
+    "share-demo": "node examples/shareCodeExample.js",
+    "seed:users": "node seed-users.js",
+    "seed:full": "node seed-full.js",
+    "seed:tags": "node tags/seed-10m.js",
+    "seed:tags:50k": "node tags/seed-50k.js",
+    "clean:tags": "node tags/clean-tags.js"
+  },
+  "keywords": [
+    "contact-manager",
+    "mongodb",
+    "nodejs",
+    "share-code",
+    "crm"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "canvas": "^3.2.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.0.0",
+    "qrcode": "^1.5.4",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
+    "uuid": "^13.0.0",
+    "validator": "^13.11.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "nodemon": "^3.0.1"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}

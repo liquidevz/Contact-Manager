@@ -1,0 +1,21 @@
+{
+  "name": "tags-seeding-standalone",
+  "version": "1.0.0",
+  "description": "Standalone 10 million tags seeding script for Tags API",
+  "main": "seed-10m.js",
+  "scripts": {
+    "seed": "node seed-10m.js"
+  },
+  "keywords": [
+    "tags",
+    "seeding",
+    "mongodb",
+    "database"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "mongoose": "^8.0.3",
+    "dotenv": "^16.3.1"
+  }
+}
