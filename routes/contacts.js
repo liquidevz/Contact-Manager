@@ -440,7 +440,7 @@ router.post('/:id/referrals', authenticate, async (req, res) => {
  */
 router.get('/:id/lists', authenticate, async (req, res) => {
     try {
-        const { type } = req.query;
+        let { type } = req.query;
         const contact = await Contact.findOne({
             _id: req.params.id,
             owner: req.userId
@@ -451,10 +451,14 @@ router.get('/:id/lists', authenticate, async (req, res) => {
         }
 
         if (type) {
-            if (!['tasks', 'meetings', 'transactions'].includes(type)) {
+            // Normalize type to plural form
+            const typeMap = { task: 'tasks', meeting: 'meetings', transaction: 'transactions' };
+            const listKey = typeMap[type] || type;
+            
+            if (!['tasks', 'meetings', 'transactions'].includes(listKey)) {
                 return res.status(400).json({ error: 'Invalid list type' });
             }
-            return res.json({ list: contact.defaultLists[type] });
+            return res.json({ list: contact.defaultLists[listKey] });
         }
 
         res.json({
