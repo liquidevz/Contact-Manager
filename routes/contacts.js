@@ -210,9 +210,8 @@ router.get('/', authenticate, async (req, res) => {
         }
 
         const contacts = await Contact.find(query)
-            .select('-defaultLists -location')
+            .select('-defaultLists -location -lists')
             .populate('linkedUser', 'fullName email profilePicture')
-            .populate('lists', 'name listType')
             .skip(skip)
             .limit(limit)
             .sort({ priority: -1, createdAt: -1 });
@@ -260,9 +259,8 @@ router.get('/:id', authenticate, async (req, res) => {
             _id: req.params.id,
             owner: req.userId
         })
-            .select('-defaultLists -location')
+            .select('-defaultLists -location -lists')
             .populate('linkedUser', 'fullName email profilePicture')
-            .populate('lists', 'name listType')
             .populate('referrals.referredTo', 'fullName email')
             .populate('referrals.referredBy', 'fullName email');
 
