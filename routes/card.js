@@ -4,7 +4,7 @@ const authenticate = require('../middleware/auth');
 const User = require('../models/User');
 const { createCanvas, loadImage } = require('canvas');
 const QRCode = require('qrcode');
-const { v4: uuidv4 } = require('uuid');
+const { randomUUID } = require('crypto');
 const path = require('path');
 
 // Helper functions
@@ -156,7 +156,7 @@ router.post('/generate', authenticate, async (req, res) => {
         const user = await User.findById(req.userId);
         if (!user) return res.status(404).json({ error: 'User not found' });
 
-        const cardId = user.businessCard?.cardId || uuidv4();
+        const cardId = user.businessCard?.cardId || randomUUID();
         const cardData = {
             displayName: user.fullName,
             profession: getProfessionDisplay(user),
