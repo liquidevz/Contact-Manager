@@ -501,13 +501,16 @@ router.get('/:id/tasks', authenticate, async (req, res) => {
         const contact = await Contact.findOne({
             _id: req.params.id,
             owner: req.userId
-        }).populate('defaultLists.tasks');
+        });
 
         if (!contact) {
             return res.status(404).json({ error: 'Contact not found' });
         }
 
-        res.json({ tasks: contact.defaultLists.tasks?.items || [] });
+        const List = require('../models/List');
+        const tasksList = await List.findById(contact.defaultLists.tasks);
+        
+        res.json({ tasks: tasksList?.items || [] });
     } catch (err) {
         console.error('Get tasks error:', err);
         res.status(500).json({ error: 'Failed to fetch tasks' });
@@ -596,13 +599,16 @@ router.get('/:id/meetings', authenticate, async (req, res) => {
         const contact = await Contact.findOne({
             _id: req.params.id,
             owner: req.userId
-        }).populate('defaultLists.meetings');
+        });
 
         if (!contact) {
             return res.status(404).json({ error: 'Contact not found' });
         }
 
-        res.json({ meetings: contact.defaultLists.meetings?.items || [] });
+        const List = require('../models/List');
+        const meetingsList = await List.findById(contact.defaultLists.meetings);
+        
+        res.json({ meetings: meetingsList?.items || [] });
     } catch (err) {
         console.error('Get meetings error:', err);
         res.status(500).json({ error: 'Failed to fetch meetings' });
@@ -688,13 +694,16 @@ router.get('/:id/transactions', authenticate, async (req, res) => {
         const contact = await Contact.findOne({
             _id: req.params.id,
             owner: req.userId
-        }).populate('defaultLists.transactions');
+        });
 
         if (!contact) {
             return res.status(404).json({ error: 'Contact not found' });
         }
 
-        res.json({ transactions: contact.defaultLists.transactions?.items || [] });
+        const List = require('../models/List');
+        const transactionsList = await List.findById(contact.defaultLists.transactions);
+        
+        res.json({ transactions: transactionsList?.items || [] });
     } catch (err) {
         console.error('Get transactions error:', err);
         res.status(500).json({ error: 'Failed to fetch transactions' });
