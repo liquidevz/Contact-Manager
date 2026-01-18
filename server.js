@@ -9,7 +9,6 @@ const connectDB = require('./config/database');
 const authRoutes = require('./routes/auth');
 const profileRoutes = require('./routes/profile');
 const contactRoutes = require('./routes/contacts');
-const listRoutes = require('./routes/lists');
 const cardRoutes = require('./routes/card');
 const tagRoutes = require('./routes/tags');
 const searchRoutes = require('./routes/search');
@@ -81,7 +80,6 @@ const versionedPath = `${apiBasePath}/${apiVersion}`;
 app.use(`${versionedPath}/auth`, authRoutes);
 app.use(`${versionedPath}/profile`, profileRoutes);
 app.use(`${versionedPath}/contacts`, contactRoutes);
-app.use(`${versionedPath}/contacts`, listRoutes); // Lists are nested under contacts
 app.use(`${versionedPath}/card`, cardRoutes);
 app.use(`${versionedPath}/tags`, tagRoutes);
 app.use(`${versionedPath}/search`, searchRoutes);

@@ -458,13 +458,13 @@ router.get('/:id/lists', authenticate, async (req, res) => {
             if (!['tasks', 'meetings', 'transactions'].includes(listKey)) {
                 return res.status(400).json({ error: 'Invalid list type' });
             }
-            return res.json({ list: contact.defaultLists[listKey] });
+            return res.json({ items: contact.defaultLists[listKey]?.items || [] });
         }
 
         res.json({
-            tasks: contact.defaultLists.tasks,
-            meetings: contact.defaultLists.meetings,
-            transactions: contact.defaultLists.transactions
+            tasks: contact.defaultLists.tasks?.items || [],
+            meetings: contact.defaultLists.meetings?.items || [],
+            transactions: contact.defaultLists.transactions?.items || []
         });
     } catch (err) {
         console.error('Get default lists error:', err);
@@ -472,11 +472,19 @@ router.get('/:id/lists', authenticate, async (req, res) => {
     }
 });
 
+router.delete('/:id/lists/:type', authenticate, async (req, res) => {
+    try {
+        return res.status(404).json({ error: 'Route removed. Use /contacts/:id/tasks, /meetings, or /transactions' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 /**
  * @swagger
- * /contacts/{id}/lists/{type}:
+ * /contacts/{id}/tasks:
  *   get:
- *     summary: Get specific default list for a contact
+ *     summary: Get all tasks for a contact
  *     tags: [Contacts]
  *     security:
  *       - bearerAuth: []
@@ -486,37 +494,25 @@ router.get('/:id/lists', authenticate, async (req, res) => {
  *         required: true
  *         schema:
  *           type: string
- *       - in: path
- *         name: type
- *         required: true
- *         schema:
- *           type: string
- *           enum: [tasks, meetings, transactions]
  *     responses:
  *       200:
- *         description: List retrieved successfully
+ *         description: Tasks retrieved successfully
  */
-router.get('/:id/lists/:type', authenticate, async (req, res) => {
+router.get('/:id/tasks', authenticate, async (req, res) => {
     try {
-        const { type } = req.params;
-
-        if (!['tasks', 'meetings', 'transactions'].includes(type)) {
-            return res.status(400).json({ error: 'Invalid list type. Must be tasks, meetings, or transactions' });
-        }
-
         const contact = await Contact.findOne({
             _id: req.params.id,
             owner: req.userId
-        }).populate(`defaultLists.${type}`);
+        }).populate('defaultLists.tasks');
 
         if (!contact) {
             return res.status(404).json({ error: 'Contact not found' });
         }
 
-        res.json({ list: contact.defaultLists[type] });
+        res.json({ tasks: contact.defaultLists.tasks?.items || [] });
     } catch (err) {
-        console.error('Get default list error:', err);
-        res.status(500).json({ error: 'Failed to fetch list' });
+        console.error('Get tasks error:', err);
+        res.status(500).json({ error: 'Failed to fetch tasks' });
     }
 });
 
@@ -582,6 +578,42 @@ router.post('/:id/tasks', authenticate, async (req, res) => {
 /**
  * @swagger
  * /contacts/{id}/meetings:
+ *   get:
+ *     summary: Get all meetings for a contact
+ *     tags: [Contacts]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Meetings retrieved successfully
+ */
+router.get('/:id/meetings', authenticate, async (req, res) => {
+    try {
+        const contact = await Contact.findOne({
+            _id: req.params.id,
+            owner: req.userId
+        }).populate('defaultLists.meetings');
+
+        if (!contact) {
+            return res.status(404).json({ error: 'Contact not found' });
+        }
+
+        res.json({ meetings: contact.defaultLists.meetings?.items || [] });
+    } catch (err) {
+        console.error('Get meetings error:', err);
+        res.status(500).json({ error: 'Failed to fetch meetings' });
+    }
+});
+
+/**
+ * @swagger
+ * /contacts/{id}/meetings:
  *   post:
  *     summary: Add meeting to contact's default meetings list
  *     tags: [Contacts]
@@ -632,6 +664,42 @@ router.post('/:id/meetings', authenticate, async (req, res) => {
     } catch (err) {
         console.error('Add meeting error:', err);
         res.status(400).json({ error: err.message });
+    }
+});
+
+/**
+ * @swagger
+ * /contacts/{id}/transactions:
+ *   get:
+ *     summary: Get all transactions for a contact
+ *     tags: [Contacts]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Transactions retrieved successfully
+ */
+router.get('/:id/transactions', authenticate, async (req, res) => {
+    try {
+        const contact = await Contact.findOne({
+            _id: req.params.id,
+            owner: req.userId
+        }).populate('defaultLists.transactions');
+
+        if (!contact) {
+            return res.status(404).json({ error: 'Contact not found' });
+        }
+
+        res.json({ transactions: contact.defaultLists.transactions?.items || [] });
+    } catch (err) {
+        console.error('Get transactions error:', err);
+        res.status(500).json({ error: 'Failed to fetch transactions' });
     }
 });
 
