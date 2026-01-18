@@ -31,7 +31,7 @@ const User = require('../models/User');
  *             properties:
  *               name:
  *                 type: string
- *               mobile:
+ *               mobileNumber:
  *                 type: string
  *               profilePhoto:
  *                 type: string
@@ -60,7 +60,7 @@ router.post('/', authenticate, async (req, res) => {
         const contact = new Contact({
             owner: req.userId,
             name: req.body.name,
-            mobile: req.body.mobile,
+            mobileNumber: req.body.mobileNumber || req.body.mobile,
             profilePhoto: req.body.profilePhoto,
             email: req.body.email,
             company: req.body.company,
@@ -107,7 +107,7 @@ router.post('/', authenticate, async (req, res) => {
  *                   properties:
  *                     name:
  *                       type: string
- *                     mobile:
+ *                     mobileNumber:
  *                       type: string
  *     responses:
  *       201:
@@ -126,7 +126,7 @@ router.post('/import', authenticate, async (req, res) => {
         const contactDocs = contacts.map(c => ({
             owner: req.userId,
             name: c.name,
-            mobile: c.mobile,
+            mobileNumber: c.mobileNumber || c.mobile,
             profilePhoto: c.profilePhoto,
             email: c.email
         }));
@@ -155,7 +155,7 @@ router.post('/import', authenticate, async (req, res) => {
  *         name: search
  *         schema:
  *           type: string
- *         description: Search by name, mobile, or email
+ *         description: Search by name, mobileNumber, or email
  *       - in: query
  *         name: tags
  *         schema:
@@ -193,7 +193,7 @@ router.get('/', authenticate, async (req, res) => {
             const searchRegex = new RegExp(req.query.search, 'i');
             query.$or = [
                 { name: searchRegex },
-                { mobile: searchRegex },
+                { mobileNumber: searchRegex },
                 { email: searchRegex }
             ];
         }
@@ -315,7 +315,7 @@ router.put('/:id', authenticate, async (req, res) => {
         }
 
         const allowedUpdates = [
-            'name', 'mobile', 'profilePhoto', 'email', 'company',
+            'name', 'mobileNumber', 'profilePhoto', 'email', 'company',
             'designation', 'notes', 'tags', 'socialProfiles',
             'address', 'location', 'priority'
         ];
